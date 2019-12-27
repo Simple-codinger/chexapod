@@ -1,9 +1,9 @@
 #include <avr/io.h>
 #include <util/delay.h>
  
-#define BLINK_DELAY_MS 100
+#define BLINK_DELAY_MS 1000
  
-int main (void)
+int main()
 {
  /* set pin 5 of PORTB for output*/
  DDRB |= _BV(DDB5);

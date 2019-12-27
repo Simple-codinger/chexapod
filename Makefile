@@ -1,47 +1,52 @@
-TARGET=robot
-MCU=atmega328p
-SOURCES=main.c
+GCC=avr-g++
+RM=rm -f
 
-F_CPU=16000000
+MCU=atmega328p
+
+F_CPU=16000000UL
 
 PROGRAMMER=arduino
 PORT=-P/dev/ttyACM0
 BAUD=-B115200
 
-#Ab hier nichts verändern
-OBJECTS=$(SOURCES:.c=.o)
-CFLAGS=-c -Os
+SRCDIR := src
+BUILDDIR := build
+BINDIR := bin
+TARGET := program
+ 
+SRCEXT := cpp
+SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
+OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
+LIB := -L lib
+INC := -I include
+CFLAGS = $(INC)
+CFLAGS += -Os
+CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
+CFLAGS += -Wall -Wstrict-prototypes
+CFLAGS += -DF_CPU=$(F_CPU)
+CFLAGS += -mmcu=$(MCU)
 LDFLAGS=
 
 all: hex eeprom
 
-hex: $(TARGET).hex
+hex: $(BINDIR)/$(TARGET).hex
 
-eeprom: $(TARGET)_eeprom.hex
+eeprom: $(BINDIR)/$(TARGET)_eeprom.hex
 
-$(TARGET).hex: $(TARGET).elf
-	avr-objcopy -O ihex -j .data -j .text $(TARGET).elf $(TARGET).hex
+$(BINDIR)/$(TARGET).hex: $(BUILDDIR)/$(TARGET).elf
+	avr-objcopy -O ihex -j .data -j .text $< $@
 
-$(TARGET)_eeprom.hex: $(TARGET).elf
-	avr-objcopy -O ihex -j .eeprom --change-section-lma .eeprom=1 $(TARGET).elf $(TARGET)_eeprom.hex
+$(BINDIR)/$(TARGET)_eeprom.hex: $(BUILDDIR)/$(TARGET).elf
+	avr-objcopy -O ihex -j .eeprom --change-section-lma .eeprom=1 $< $@
 
-$(TARGET).elf: $(OBJECTS)
-	avr-gcc $(LDFLAGS) -mmcu=$(MCU) $(OBJECTS) -o $(TARGET).elf
+$(BUILDDIR)/$(TARGET).elf: $(OBJECTS)
+	$(GCC) $(CFLAGS) $(OBJECTS) -o $@
 
-.c.o:
-	avr-gcc $(CFLAGS) -DF_CPU=$(F_CPU)UL -mmcu=$(MCU) $< -o $@
+$(BUILDDIR)/%.o : $(SRCDIR)/%.cpp
+	$(GCC) $< $(CFLAGS) -c -o $@
 
-size:
-	avr-size --mcu=$(MCU) -C $(TARGET).elf
-
-program:
-	avrdude -p$(MCU) $(PORT) $(BAUD) -c$(PROGRAMMER) -Uflash:w:$(TARGET).hex:a
-
-clean_tmp:
-	rm -rf *.o
-	rm -rf *.elf
+flash:
+	avrdude -p$(MCU) $(PORT) $(BAUD) -c$(PROGRAMMER) -Uflash:w:$(BINDIR)/$(TARGET).hex:a
 
 clean:
-	rm -rf *.o
-	rm -rf *.elf
-	rm -rf *.hex
+	$(RM) $(BINDIR)/* $(OBJECTS) $(BUILDDIR)/*
