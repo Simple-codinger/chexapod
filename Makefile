@@ -21,6 +21,7 @@ LIB := -L lib
 INC := -I include
 CFLAGS = $(INC)
 CFLAGS += -Os
+CFLAGS += -std=c++11
 CFLAGS += -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
 CFLAGS += -Wall -Wstrict-prototypes
 CFLAGS += -DF_CPU=$(F_CPU)

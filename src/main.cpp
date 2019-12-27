@@ -1,13 +1,19 @@
 #include <util/delay.h>
-#include "../include/robot.h"
+#include <stdint.h>
+#include "../include/digitalPinUtil.h"
+
+using namespace digitalPinUtil;
 
 #define BLINK_DELAY_MS 1000
  
 int main()
 { 
-    Robot robot;
+    pinMode(13, OUTPUT);
+    
     while(1) {
-        robot.blink();
+        digitalWritePin(13, HIGH);
+        _delay_ms(BLINK_DELAY_MS);
+        digitalWritePin(13, LOW);
         _delay_ms(BLINK_DELAY_MS);
     }
 }

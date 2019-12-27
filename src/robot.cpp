@@ -1,5 +1,5 @@
 #include "../include/robot.h"
-#include "../include/pinUtil.h"
+#include "../include/digitalPinUtil.h"
 
 using namespace pinUtil;
 
