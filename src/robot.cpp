@@ -1,4 +1,7 @@
 #include "../include/robot.h"
+#include "../include/pinUtil.h"
+
+using namespace pinUtil;
 
 /*
   PORTB |= (1 << PB1);  //PB1 High
@@ -8,15 +11,8 @@
 Robot::Robot(){
     /* set pin 5 of PORTB for output*/
     DDRB |= _BV(DDB5);
-
-    /* set pin 5 high to turn led on */
-    PORTB = 0x20;
 }
 
 void Robot::blink(){
-    if(PORTB & (1 << PB5)){
-        PORTB &= ~(1 << PB5);
-    }else{
-        PORTB |= (1 << PB5);
-    }
+    writePin(PB5, PORTB, LOW);
 }
