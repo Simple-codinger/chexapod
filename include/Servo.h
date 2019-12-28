@@ -5,5 +5,5 @@ class Servo{
     public:
         Servo();
         void attach(int pin);
-}
+};
 #endif

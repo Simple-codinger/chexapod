@@ -14,9 +14,9 @@ namespace digitalPinUtil
 {
     void digitalWritePin(uint8_t pin, uint8_t value){
         uint8_t bitMask = wiring::digitalPinToBitMask(pin);
-        volatile uint8_t *out = wiring::portOutputRegister(port);
+        volatile uint8_t* out = wiring::digitalPinToPort(pin);
 
-        if (val == LOW) {
+        if (value == LOW) {
             *out &= ~bitMask;
         } else {
             *out |= bitMask;
@@ -24,16 +24,18 @@ namespace digitalPinUtil
     }
 
     void pinMode(uint8_t pin, uint8_t mode){
+        volatile uint8_t* reg = wiring::portModeRegister(pin);
         switch(mode){
             case OUTPUT:
-                *(wiring::portModeRegister(pin)) |= wiring::digitalPinToBitMask(pin);
+                *reg |= wiring::digitalPinToBitMask(pin);
                 break;
             case INPUT:
-                *(wiring::portModeRegister(pin)) &= ~wiring::digitalPinToBitMask(pin);
+                *reg &= ~wiring::digitalPinToBitMask(pin);
                 break;
             default:
                 break;
         }
+        
     }
 }
 #endif

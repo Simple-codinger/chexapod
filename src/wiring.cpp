@@ -6,22 +6,22 @@ uint8_t wiring::digitalPinToBitMask(uint8_t pin){
     }
 }
 
-uint8_t* wiring::digitalPinToPort(uint8_t pin){
+volatile uint8_t* wiring::digitalPinToPort(uint8_t pin){
     if(pin >= 0 && pin < 14){
         if(pin < 8){
-            return PORTD;
+            return &PORTD;
         }else {
-            return PORTB;
+            return &PORTB;
         }
     }
 }
 
 uint8_t wiring::digitalPinToTimer(uint8_t pin){ return 0; }
 
-uint8_t* wiring::portModeRegister(uint8_t port){
-        if(pin < 8){
-            return DDRD;
-        }else {
-            return DDRB;
-        }
+volatile uint8_t* wiring::portModeRegister(uint8_t port){
+    if(port < 8){
+        return &DDRD;
+    }else {
+        return &DDRB;
     }
+}

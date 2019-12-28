@@ -4,16 +4,19 @@
 
 using namespace digitalPinUtil;
 
-#define BLINK_DELAY_MS 1000
+#define BLINK_DELAY_MS 100
  
 int main()
 { 
-    pinMode(13, OUTPUT);
+    pinMode(8, OUTPUT);
+    pinMode(7, OUTPUT);
     
     while(1) {
-        digitalWritePin(13, HIGH);
+        digitalWritePin(8, HIGH);
+        digitalWritePin(7, LOW);
         _delay_ms(BLINK_DELAY_MS);
-        digitalWritePin(13, LOW);
+        digitalWritePin(8, LOW);
+        digitalWritePin(7, HIGH);
         _delay_ms(BLINK_DELAY_MS);
     }
 }
